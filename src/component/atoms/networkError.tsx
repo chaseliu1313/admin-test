@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 
-export const Error = (): ReactElement => (
+export const NetworkError = (): ReactElement => (
   <div
     style={{
       height: 500,

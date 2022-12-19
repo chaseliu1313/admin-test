@@ -12,7 +12,7 @@ type CoreContextProps = {
 
 const CoreContext = React.createContext<CoreContextProps>({} as CoreContextProps);
 
-const CoreContextProvider = (props: { children: React.ReactChild }): ReactElement => {
+const CoreContextProvider = (props: { children: JSX.Element | JSX.Element[] }): ReactElement => {
   const [state, dispatch] = useReducer(coreStateReducers, initCoreState);
 
   return (
