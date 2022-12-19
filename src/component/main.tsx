@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { Admin, Resource, ListGuesser, AuthProvider, CustomRoutes } from 'react-admin';
+import { Admin, Resource, ListGuesser, AuthProvider } from 'react-admin';
 import jsonServerProvider from 'ra-data-json-server';
 import { AxiosIns, bearere, login } from '../network';
 
