@@ -1,13 +1,14 @@
 import React, { ReactElement } from 'react';
-import { Admin, Resource, ListGuesser, Login, AuthProvider } from 'react-admin';
+import { Admin, Resource, ListGuesser, AuthProvider, CustomRoutes } from 'react-admin';
 import jsonServerProvider from 'ra-data-json-server';
-import useCoreState from '../hooks/useCoreState';
-import { login } from '../network';
-import { CoreActionTypes } from '../context';
+import { AxiosIns, bearere, login } from '../network';
+
+import { useToken } from '../hooks';
+
 const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 
 const MainContainer = (): ReactElement => {
-  const { coreState, updateCoreState } = useCoreState();
+  const { token, updateToken } = useToken();
 
   const authProvider: AuthProvider = {
     login: ({ username, password }) => {
@@ -15,10 +16,15 @@ const MainContainer = (): ReactElement => {
         if (typeof res === 'object' && res !== null) {
           const resObj = res as { data: { token: string } };
           if (resObj.data.token) {
-            console.log(resObj.data.token);
-            updateCoreState({
-              type: CoreActionTypes.SET_USER,
-              payload: { ...coreState, token: resObj.data.token }
+            updateToken(resObj.data.token);
+            //adding token using interceptors
+            AxiosIns.getInstace().interceptors.request.use((req) => {
+              const header = req.headers;
+              if (header) {
+                header.authorization = bearere + resObj.data.token;
+                console.log('token added', resObj.data.token);
+              }
+              return req;
             });
           }
         }
@@ -34,16 +40,16 @@ const MainContainer = (): ReactElement => {
       return Promise.resolve();
     },
     checkAuth: () => {
-      if (coreState.token === '') return Promise.reject({ message: 'please login' });
+      if (token === '') return Promise.reject({ message: 'please login' });
       return Promise.resolve();
     },
     logout: () => {
-      updateCoreState({ type: CoreActionTypes.SET_USER, payload: { ...coreState, token: '' } });
+      updateToken('');
       return Promise.resolve();
     },
     getIdentity: () => {
       //fetch user information or user information pass from login
-      if (coreState.token === '') return Promise.reject({ message: 'please login' });
+      if (token === '') return Promise.reject({ message: 'please login' });
       return Promise.resolve({ id: 123, fullName: 'test' });
     },
     getPermissions: () => Promise.resolve()
