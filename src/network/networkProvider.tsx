@@ -8,14 +8,11 @@ export class AxiosIns {
   private constructor() {}
   public static getInstace(): AxiosInstance {
     if (!AxiosIns.instace) {
-      console.log('new instance');
       AxiosIns.instace = axios.create({
         baseURL: BASE_URL,
         timeout: 1000,
         headers: { 'X-APPID': APP_ID, 'content-type': 'application/json' }
       });
-    } else {
-      console.log('old instance');
     }
     return AxiosIns.instace;
   }

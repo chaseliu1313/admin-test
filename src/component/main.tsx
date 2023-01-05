@@ -2,8 +2,9 @@ import React, { ReactElement } from 'react';
 import { Admin, Resource, ListGuesser, AuthProvider } from 'react-admin';
 import jsonServerProvider from 'ra-data-json-server';
 import { AxiosIns, bearere, login } from '../network';
-
 import { useToken } from '../hooks';
+import { customTheme } from '../theme';
+import LoginPage from '../page/login';
 
 const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 
@@ -17,12 +18,14 @@ const MainContainer = (): ReactElement => {
           const resObj = res as { data: { token: string } };
           if (resObj.data.token) {
             updateToken(resObj.data.token);
+
             //adding token using interceptors
             AxiosIns.getInstace().interceptors.request.use((req) => {
+              console.log('req header', req.headers);
               const header = req.headers;
+
               if (header) {
                 header.authorization = bearere + resObj.data.token;
-                console.log('token added', resObj.data.token);
               }
               return req;
             });
@@ -57,7 +60,12 @@ const MainContainer = (): ReactElement => {
 
   return (
     <div style={{ height: '100%', width: '100%' }}>
-      <Admin dataProvider={dataProvider} authProvider={authProvider}>
+      <Admin
+        loginPage={LoginPage}
+        dataProvider={dataProvider}
+        authProvider={authProvider}
+        theme={customTheme}
+        requireAuth>
         <Resource name="users" list={ListGuesser} />
       </Admin>
     </div>
