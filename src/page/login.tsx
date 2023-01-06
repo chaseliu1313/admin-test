@@ -1,7 +1,9 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
+import { useLogin } from 'react-admin';
 import styled, { useTheme } from 'styled-components';
 import bg from '../asset/bg2.png';
-import { Button } from '../component/atoms';
+import { Button, StyledInput, ErrorMsg } from '../component/atoms';
+import { useErrors } from '../hooks';
 
 const Container = styled.div`
   width: 100vw;
@@ -16,6 +18,7 @@ const Container = styled.div`
 `;
 
 const Card = styled.div`
+  position: relative;
   min-width: 374px;
   min-height: 600px;
   width: 35%;
@@ -30,7 +33,7 @@ const Card = styled.div`
 `;
 
 const LogoContainer = styled.div`
-  min-width: 299px;
+  min-width: 300px;
   height: 210px;
   min-height: 200px;
   display: flex;
@@ -76,10 +79,44 @@ const CompanyLabel = styled.body`
   user-select: none;
 `;
 
-const Input = styled.input``;
+const StyledForm = styled.form`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+  height: 45%;
+  width: 100%;
+  min-width: 374px;
+`;
+
+const EndContainer = styled.div`
+  height: 20%;
+  width: 100%;
+  min-width: 374px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+`;
 
 const LoginPage = (): ReactElement => {
   const theme = useTheme();
+  const login = useLogin();
+  const { error } = useErrors();
+  const [userLogin, setUserLogin] = useState<{ email: string; psw: string }>({
+    email: '',
+    psw: ''
+  });
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const handleSubmit = (): void => {
+    if (userLogin.email === '' || userLogin.psw === '') {
+      setErrorMessage('empty');
+    } else {
+      setErrorMessage('');
+      login({ username: userLogin.email, password: userLogin.psw });
+    }
+  };
+
   return (
     <Container>
       <Card>
@@ -101,15 +138,56 @@ const LoginPage = (): ReactElement => {
             <LogoLabel>Operations Portal</LogoLabel>
           </LogoRow>
         </LogoContainer>
-        <Button
-          variant="contained"
-          onClick={() => {
-            console.log('clicked');
-          }}
-          size="large"
-          color="primary"
-          label="login"
-        />
+        <StyledForm>
+          <StyledInput
+            type="email"
+            required
+            value={userLogin.email}
+            placeHolder="Enter Email ..."
+            errorMessage={errorMessage}
+            onChange={(e) => {
+              setUserLogin({ ...userLogin, email: e.target.value });
+            }}
+          />
+          <StyledInput
+            type="password"
+            value={userLogin.psw}
+            required
+            errorMessage={errorMessage}
+            placeHolder="Enter Password ..."
+            onChange={(e) => {
+              setUserLogin({ ...userLogin, psw: e.target.value });
+            }}
+          />
+          <Button
+            variant="contained"
+            onClick={handleSubmit}
+            size="large"
+            color="primary"
+            label="login"
+          />
+          <ErrorMsg>{error.loginError}</ErrorMsg>
+        </StyledForm>
+        <EndContainer>
+          <Button
+            variant="text"
+            onClick={() => {
+              console.log('forgot psw');
+            }}
+            size="large"
+            color="primary"
+            label="Forgot your password?"
+          />
+        </EndContainer>
+        <ErrorMsg
+          style={{
+            color: theme.palette.primary.main,
+            position: 'absolute',
+            bottom: 0,
+            left: '43%'
+          }}>
+          version 0.1
+        </ErrorMsg>
       </Card>
     </Container>
   );

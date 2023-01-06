@@ -42,6 +42,7 @@ const ButtonContainer = styled.button<{
       bgColor = palette.primary.contrastText;
     }
     return `
+    margin: 5px 0;
     box-sizing: border-box;
     cursor: pointer;
     border-radius: 5px;
@@ -51,7 +52,7 @@ const ButtonContainer = styled.button<{
     height: ${size === 'xl' ? '60px' : '30px'};
     width: ${
       size === 'xl' || size === 'large'
-        ? '260px'
+        ? '300px'
         : size === 'normal'
         ? '120px'
         : size === 'small'

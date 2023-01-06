@@ -21,11 +21,13 @@ export class AxiosIns {
 type NetworkContextType = {
   instance: AxiosInstance;
   token: string;
+  error: { loginError: string; networkError: string };
 };
 
 type NetworkContextProps = {
   networkState: NetworkContextType;
   updateToken: (token: string) => void;
+  setError: (e: { loginError: string; networkError: string }) => void;
 };
 
 const NetworkContext = React.createContext<NetworkContextProps>({} as NetworkContextProps);
@@ -33,6 +35,7 @@ const NetworkContext = React.createContext<NetworkContextProps>({} as NetworkCon
 const NetworkContextProvider = (props: { children: JSX.Element | JSX.Element[] }): ReactElement => {
   const [state, setState] = useState<NetworkContextType>({
     instance: AxiosIns.getInstace(),
+    error: { loginError: '', networkError: '' },
     token: ''
   });
 
@@ -40,11 +43,16 @@ const NetworkContextProvider = (props: { children: JSX.Element | JSX.Element[] }
     setState({ ...state, token });
   };
 
+  const setError = (e: { loginError: string; networkError: string }): void => {
+    setState({ ...state, error: e });
+  };
+
   return (
     <NetworkContext.Provider
       value={{
         networkState: state,
-        updateToken
+        updateToken,
+        setError
       }}>
       {props.children}
     </NetworkContext.Provider>
