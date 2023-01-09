@@ -35,6 +35,7 @@ type Props = {
   autoComplete?: string;
   required?: boolean;
   disabled?: boolean;
+  handleKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };
 
 export const StyledInput = ({
@@ -44,7 +45,8 @@ export const StyledInput = ({
   onChange,
   value,
   required,
-  disabled
+  disabled,
+  handleKeyDown
 }: Props): ReactElement => {
   const [errMsg, setErrMsg] = useState<string>('');
   const { error, setError } = useErrors();
@@ -76,8 +78,10 @@ export const StyledInput = ({
         disabled={disabled}
         onBlur={() => handleValidation()}
         er={errMsg}
-        onSubmit={() => {
-          console.log('submitted');
+        onKeyDown={(e) => {
+          if (handleKeyDown) {
+            handleKeyDown(e);
+          }
         }}
       />
       <ErrorMsg>{errMsg}</ErrorMsg>

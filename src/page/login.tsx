@@ -3,7 +3,7 @@ import { useLogin } from 'react-admin';
 import styled, { useTheme } from 'styled-components';
 import bg from '../asset/bg2.png';
 import { Button, StyledInput, ErrorMsg } from '../component/atoms';
-import { useErrors } from '../hooks';
+import { useErrors, useUser } from '../hooks';
 
 const Container = styled.div`
   width: 100vw;
@@ -21,13 +21,14 @@ const Card = styled.div`
   position: relative;
   min-width: 374px;
   min-height: 600px;
+  max-width: 500px;
   width: 35%;
   height: 70%;
   border-radius: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10%;
+  padding: 5%;
   flex-direction: column;
   background-color: ${(props) => props.theme.palette.primary.contrastText};
 `;
@@ -52,9 +53,10 @@ const LogoRow = styled.div<{ align: string; background: string }>`
   flex-direction: row;
 `;
 
-const LogoLabel = styled.body`
-  line-height: unset;
+const LogoLabel = styled.p`
+  line-height: 1em;
   letter-spacing: 7.5px;
+  margin-block-start: 5px;
   ${({ theme }) => `font-size: ${theme.fontSize.h6}px; 
   font-weight: ${theme.fontWeight.body2};`}
   user-select: none;
@@ -70,12 +72,11 @@ const LogoText = styled.h1<{ padding: string; color: string }>`
   user-select: none;
 `;
 
-const CompanyLabel = styled.body`
+const CompanyLabel = styled.p`
   font-size: 14px;
   line-height: 1em;
   color: ${(props) => props.theme.palette.primary.contrastText};
   text-align: left;
-  padding: 15% 0 0 5%;
   user-select: none;
 `;
 
@@ -102,6 +103,7 @@ const EndContainer = styled.div`
 const LoginPage = (): ReactElement => {
   const theme = useTheme();
   const login = useLogin();
+  const { setUser } = useUser();
   const { error } = useErrors();
   const [userLogin, setUserLogin] = useState<{ email: string; psw: string }>({
     email: '',
@@ -113,7 +115,9 @@ const LoginPage = (): ReactElement => {
       setErrorMessage('empty');
     } else {
       setErrorMessage('');
-      login({ username: userLogin.email, password: userLogin.psw });
+      login({ username: userLogin.email, password: userLogin.psw }).then(() => {
+        setUser(userLogin.email);
+      });
     }
   };
 
@@ -144,6 +148,7 @@ const LoginPage = (): ReactElement => {
             required
             value={userLogin.email}
             placeHolder="Enter Email ..."
+            autoComplete="on"
             errorMessage={errorMessage}
             onChange={(e) => {
               setUserLogin({ ...userLogin, email: e.target.value });
@@ -154,9 +159,15 @@ const LoginPage = (): ReactElement => {
             value={userLogin.psw}
             required
             errorMessage={errorMessage}
+            autoComplete="on"
             placeHolder="Enter Password ..."
             onChange={(e) => {
               setUserLogin({ ...userLogin, psw: e.target.value });
+            }}
+            handleKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSubmit();
+              }
             }}
           />
           <Button

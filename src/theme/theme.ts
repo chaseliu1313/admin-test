@@ -4,7 +4,8 @@ export const customTheme: RaThemeOptions = {
   ...defaultTheme,
   palette: {
     background: {
-      default: '#2e3551'
+      default: '#2e3551',
+      paper: '#FFF'
     },
     primary: {
       light: '#d8dfff',

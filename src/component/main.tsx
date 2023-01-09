@@ -1,11 +1,13 @@
 import React, { ReactElement } from 'react';
-import { Admin, Resource, ListGuesser, AuthProvider } from 'react-admin';
+import { Admin, Resource, ListGuesser, AuthProvider, List } from 'react-admin';
 import jsonServerProvider from 'ra-data-json-server';
 import { AxiosIns, bearere, login } from '../network';
 import { useErrors, useToken } from '../hooks';
 import { customTheme } from '../theme';
 import LoginPage from '../page/login';
 import { AxiosError } from 'axios';
+import { LoadList } from './loadList';
+import { PageLayout } from './defaultLayout';
 
 const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 
@@ -25,7 +27,6 @@ const MainContainer = (): ReactElement => {
 
               //adding token using interceptors
               AxiosIns.getInstace().interceptors.request.use((req) => {
-                console.log('req header', req.headers);
                 const header = req.headers;
 
                 if (header) {
@@ -46,7 +47,7 @@ const MainContainer = (): ReactElement => {
     },
     checkError: (e) => {
       const status = e.status;
-      console.log('error captured', status);
+
       if (status === 401 || status === 403) {
         localStorage.removeItem('auth');
         return Promise.reject();
@@ -76,9 +77,10 @@ const MainContainer = (): ReactElement => {
         loginPage={LoginPage}
         dataProvider={dataProvider}
         authProvider={authProvider}
+        layout={PageLayout}
         theme={customTheme}
         requireAuth>
-        <Resource name="users" list={ListGuesser} />
+        <Resource name="users" list={LoadList} />
       </Admin>
     </div>
   );

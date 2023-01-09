@@ -1,5 +1,5 @@
 import { DefaultTheme } from 'styled-components';
-import { createGlobalStyle, ThemeProps } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 
 const fontSize = {
   h1: 96,
@@ -35,7 +35,8 @@ export const styledTheme: DefaultTheme = {
   name: 'defaultTheme',
   palette: {
     background: {
-      default: '#2e3551'
+      default: '#2e3551',
+      paper: '#FFF'
     },
     primary: {
       light: '#d8dfff',

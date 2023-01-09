@@ -2,7 +2,7 @@ import { Dispatch, useContext } from 'react';
 import { CoreActions, CoreState } from '../context';
 import { CoreContext } from './coreContext';
 
-export default function useUser(): {
+export default function useCoreState(): {
   coreState: CoreState;
   updateCoreState: Dispatch<CoreActions>;
 } {

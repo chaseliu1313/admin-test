@@ -11,7 +11,7 @@ export class AxiosIns {
       AxiosIns.instace = axios.create({
         baseURL: BASE_URL,
         timeout: 1000,
-        headers: { 'X-APPID': APP_ID, 'content-type': 'application/json' }
+        headers: { 'X-APPID': APP_ID, 'content-type': 'application/json', 'X-PACKETID': 1 }
       });
     }
     return AxiosIns.instace;

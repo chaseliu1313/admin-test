@@ -4,7 +4,7 @@ import { CoreState } from './CoreContext.interface';
 export const coreStateReducers = (state: CoreState, action: CoreActions): CoreState => {
   switch (action.type) {
     case CoreActionTypes.SET_USER:
-      return { ...state, token: action.payload.token };
+      return { ...state, userName: action.payload.userName };
     default:
       return { ...state };
   }

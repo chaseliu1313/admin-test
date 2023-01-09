@@ -2,7 +2,7 @@ import React, { Dispatch, ReactElement, useReducer } from 'react';
 import { CoreActions, CoreState, coreStateReducers } from '../context';
 
 export const initCoreState: CoreState = {
-  token: ''
+  userName: ''
 };
 
 type CoreContextProps = {
